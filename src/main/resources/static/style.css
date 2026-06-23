@@ -1,0 +1,240 @@
+/* PALETA DE COLORES */
+:root {
+    --bg-main: #050111;         /* Fondo ultra oscuro */
+    --bg-gradient: linear-gradient(135deg, #090222 0%, #04010d 100%);
+    --card-bg: rgba(20, 15, 45, 0.6); /* Tarjetas oscuras con transparencia */
+    --card-border: rgba(155, 89, 182, 0.15); /* Bordes violetas sutiles */
+    
+    --primary-neon: #00d2ff;    /* Azul eléctrico para acentos */
+    --purple-neon: #9b59b6;     /* Violeta de tu portafolio */
+    
+    --text-main: #f3f0ff;       /* Blanco/violeta muy claro para lectura */
+    --text-muted: #948cb3;      /* Gris violeta para textos secundarios */
+    
+    /* Botones con tonos integrados al modo oscuro */
+    --btn-green: #00b894;
+    --btn-blue: #0984e3;
+    --btn-red: #d63031;
+}
+
+/* ESTILOS GENERALES */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: var(--bg-main);
+    background-image: var(--bg-gradient);
+    background-attachment: fixed;
+    color: var(--text-main);
+    min-height: 100vh;
+}
+
+/* ENCABEZADO */
+header {
+    background: rgba(11, 3, 53, 0.85);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    padding: 25px 20px;
+    color: var(--text-main);
+    font-family: 'Montserrat', sans-serif;
+    text-align: center;
+    font-size: 1.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    border-bottom: 1px solid rgba(155, 89, 182, 0.2);
+}
+
+header i {
+    color: var(--primary-neon); /* El icono se ilumina en azul neón */
+    text-shadow: 0 0 10px rgba(0, 210, 255, 0.5);
+}
+
+header span {
+    letter-spacing: 1px;
+}
+
+/* CONTENEDORES CON EFECTO GLASSMORPHISM */
+#panel, #formularios, #tablaResultados {
+    background: var(--card-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    max-width: 1000px;
+    margin: 30px auto;
+    padding: 25px;
+    border-radius: 16px;
+    border: 1px solid var(--card-border);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+#formularios:empty {
+    display: none;
+}
+
+#panel {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+}
+
+/* BOTONES TECNOLÓGICOS */
+button {
+    font-family: inherit;
+    font-weight: 600;
+    padding: 12px 24px;
+    border: 1px solid transparent;
+    border-radius: 30px; /* Bordes redondeados estilo tus tags de tecnologías */
+    color: var(--text-main);
+    cursor: pointer;
+    font-size: 0.9rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background-size: 200% auto;
+}
+
+button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+}
+
+button:active {
+    transform: translateY(-1px);
+}
+
+/* Degradados sutiles para los botones en sintonía con la interfaz */
+.btn-green { 
+    background-image: linear-gradient(to right, #00b894 0%, #00cec9 51%, #00b894 100%); 
+}
+.btn-blue { 
+    background-image: linear-gradient(to right, #0984e3 0%, #00cec9 51%, #0984e3 100%); 
+}
+.btn-red { 
+    background-image: linear-gradient(to right, #d63031 0%, #e17055 51%, #d63031 100%); 
+}
+.btn-purple { 
+    background-image: linear-gradient(to right, #6c5ce7 0%, #a29bfe 51%, #6c5ce7 100%); 
+}
+
+button:hover {
+    background-position: right center; /* Efecto de brillo al pasar el mouse */
+}
+
+/* FORMULARIOS E INPUTS MODERNOS */
+#formularios h4 {
+    margin-top: 0;
+    color: var(--primary-neon);
+    font-size: 1.3rem;
+    font-family: 'Montserrat', sans-serif;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 12px;
+}
+
+input[type="text"], 
+input[type="number"], 
+input[type="datetime-local"] {
+    width: 100%;
+    max-width: 400px;
+    box-sizing: border-box;
+    padding: 14px 18px;
+    margin: 12px auto;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(155, 89, 182, 0.25);
+    border-radius: 10px;
+    font-size: 0.95rem;
+    color: var(--text-main);
+    transition: all 0.3s ease;
+    display: block;
+}
+
+/* Cambia el color de las letras del placeholder */
+input::placeholder {
+    color: var(--text-muted);
+}
+
+/* Estilo para el input de fecha (calendario) en modo oscuro */
+input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+    filter: invert(1); /* Hace que el icono del calendario sea blanco */
+    cursor: pointer;
+}
+
+input:focus {
+    outline: none;
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--primary-neon);
+    box-shadow: 0 0 12px rgba(0, 210, 255, 0.3);
+}
+
+/* TABLA TECNOLÓGICA */
+.table-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+#buscador {
+    margin: 0;
+    max-width: 320px;
+    background: rgba(5, 1, 17, 0.5);
+}
+
+.table-container {
+    overflow-x: auto;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: transparent;
+    text-align: left;
+}
+
+th, td {
+    padding: 16px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+th {
+    background-color: rgba(11, 3, 53, 0.6);
+    color: var(--primary-neon);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+}
+
+tr:last-child td {
+    border-bottom: none;
+}
+
+td strong {
+    color: var(--purple-neon); /* Resalta el ID con el violeta de tu portfolio */
+}
+
+tr:hover {
+    background-color: rgba(255, 255, 255, 0.03);
+    transition: background-color 0.2s ease;
+}
+
+/* CONTENEDOR INFORMATIVO INICIAL */
+.info-placeholder {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    padding: 40px 20px;
+}
+
+.info-placeholder i {
+    color: var(--purple-neon);
+    margin-bottom: 10px;
+    display: block;
+    font-size: 1.8rem;
+}

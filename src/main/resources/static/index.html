@@ -2,186 +2,301 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Gestión de citas</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Citas</title>
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style.css">
+    
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    
-    <style>
-        body { font-family: 'Arial', sans-serif ; margin: 0; background-color: #e5e2fb; }
-        header { background-color: #0b0335; padding: 20px; color: white; font-family: 'Montserrat', sans-serif; text-align: center; font-size: 2em; display: flex; align-items: center; justify-content: center; gap: 10px; }
-        #panel { padding: 20px; background: rgb(173, 173, 173); margin: 20px; border-radius: 10px; box-shadow: 0px 0px 10px rgba(0,0,0,0.1); }
-        button { margin: 5px; padding: 10px 15px; border: none; border-radius: 5px; color: white; cursor: pointer; font-size: 14px; }
-        .btn-blue { background-color: #020261; }
-        .btn-green { background-color: #0f4202; }
-        .btn-red { background-color: #600003; }
-        .btn- { background-color: #380854; }
-        table { width: 100%; border-collapse: collapse; background: white; margin-top: 20px; }
-        th, td { padding: 12px; border: 1px solid #ddd; text-align: center; }
-        th { background-color: #e9ecef; }
-        input { padding: 8px; margin: 5px; border: 1px solid #ccc; border-radius: 5px; }
-        #tablaResultados { margin: 20px; }
-        tr:hover {
-            background-color: #f1f0ff;
-            transition: 0.3s;}
-        table {
-            box-shadow: 0px 4px 8px rgba(0,0,0,0.05);
-            border-radius: 8px;
-            overflow: hidden;
-        }
-    </style>
 </head>
 
 <body>
     <header>
         <i class="fa fa-address-book"></i>
-        <span>Gestión de citas</span>
+        <span>GESTIÓN DE CITAS</span>
     </header>
 
     <div id="panel">
         <button class="btn-green" onclick="mostrarFormularioInsertar()"><i class="fas fa-plus"></i> Agendar Cita</button>
         <button class="btn-blue" onclick="consultarCita()"><i class="fas fa-search"></i> Consultar Cita</button>
         <button class="btn-red" onclick="mostrarFormularioEliminar()"><i class="fas fa-trash"></i> Eliminar Cita</button>
-        <button class="btn-" onclick="listarCitas()"><i class="fas fa-list"></i> Listar Citas</button> 
+        <button class="btn-purple" onclick="listarCitas()"><i class="fas fa-list"></i> Listar Citas</button> 
     </div>
 
-    <div id="formularios" style="margin: 20px;"></div>
-    <div id="tablaResultados" style="margin: 20px; text-align: center; color: #666;">
-        <p><i class="fas fa-info-circle"></i> Seleccioná "Listar Citas" para ver la agenda actual.</p>        
+    <div id="formularios"></div>
+    
+    <div id="tablaResultados">
+        <div class="info-placeholder">
+            <p><i class="fas fa-info-circle"></i> Seleccioná "Listar Citas" para ver la agenda actual.</p> 
+        </div>       
     </div>
-
 
     <script>
-        const URL_BASE = "http://localhost:8080/api/appointments";
+    const URL_BASE = "http://localhost:8080/api/appointments";
 
-// listar
-        function listarCitas(){
-            $.get(URL_BASE, function(data) {
-                mostrarTabla(data);
-            }).fail(()=>Swal.fire("Error","No se pudieron obtener las citas", "error"));
-        }
+    // Configuración base estética para SweetAlert en modo oscuro
+    const swalConfig = {
+        background: '#0f0b21',
+        color: '#f3f0ff',
+        confirmButtonColor: '#6c5ce7',
+        cancelButtonColor: '#303136'
+    };
 
-// buscar por id
+    function listarCitas(){
+        $.get(URL_BASE, function(data) {
+            mostrarTabla(data);
+        }).fail(()=>Swal.fire({...swalConfig, title: "Error", text: "No se pudieron obtener las citas", icon: "error"}));
+    }
+
     function consultarCita() {
         Swal.fire({
+            ...swalConfig,
             title: "Buscar cita por ID",
             input: "number",
             inputLabel: "Ingrese el ID de la cita",
             showCancelButton: true,
-            confirmButtonText: "Buscar"
+            cancelButtonText: "Cancelar",
+            confirmButtonText: "Buscar",
+            confirmButtonColor: "#0984e3"
         }).then(result => {
             if (result.isConfirmed && result.value) {
                 $.get(URL_BASE + "/" + result.value, function (data) {
                     mostrarTabla([data]);
-                }).fail(() => Swal.fire("Error", "Cita no encontrada", "error"));
+                }).fail(() => Swal.fire({...swalConfig, title: "Error", text: "Cita no encontrada", icon: "error"}));
             }
         });
     }
 
-// formulario agendar
     function mostrarFormularioInsertar() {
         $("#formularios").html(`
             <h4>Insertar Nueva Cita</h4>
-            <input type="text" id="insNombre" placeholder="Nombre del cliente"><br>
-            <input type="text" id="insServicio" placeholder="Servicio"><br>
-            
-            <input type="datetime-local" id="insFechaHora"><br>
-
-            <button class="btn-green" onclick="agendarCita()">Guardar</button>
+            <div style="text-align: center;">
+                <input type="text" id="insNombre" placeholder="Nombre del cliente">
+                <input type="text" id="insServicio" placeholder="Servicio">
+                <input type="datetime-local" id="insFechaHora">
+                <button class="btn-green" style="margin-top: 15px;" onclick="agendarCita()"><i class="fas fa-save"></i> Guardar Cita</button>
+            </div>
         `);
+        document.getElementById("formularios").scrollIntoView({ behavior: 'smooth' });
     }
 
-// agendar cita
     function agendarCita() {
+        const nombre = $("#insNombre").val().trim();
+        const servicio = $("#insServicio").val().trim();
+        const fechaHora = $("#insFechaHora").val();
+
+        if (!nombre || !servicio || !fechaHora) {
+            return Swal.fire({
+                ...swalConfig,
+                title: "Campos incompletos",
+                text: "Por favor, completa todos los campos (Nombre, Servicio y Fecha/Hora) antes de guardar.",
+                icon: "warning",
+                confirmButtonColor: "#9b59b6"
+            });
+        }
+
         const dto = {
-            nombreCliente: $("#insNombre").val(),
-            servicio: $("#insServicio").val(),
-            fechaHora: $("#insFechaHora").val()
+            nombreCliente: nombre,
+            servicio: servicio,
+            fechaHora: fechaHora
         };
+
         $.ajax({
             url: URL_BASE,
             method: "POST",
             contentType: "application/json",
             data: JSON.stringify(dto),
             success: data => {
-                Swal.fire("Éxito", "Cita agendada correctamente", "success");
-                mostrarTabla([data]);
-                listarCitas()
+                Swal.fire({...swalConfig, title: "Éxito", text: "Cita agendada correctamente", icon: "success", confirmButtonColor: "#00b894"});
+                $("#formularios").html("");
+                listarCitas();
             },
-            error: (xhr) => { //xhr: Es el objeto que contiene toda la respuesta del servidor (incluyendo errores
-                const mensaje = xhr.responseJSON ? xhr.responseJSON.message : "Error desconocido"; // ¿El servidor me envió un objeto JSON con detalles del error?
-                Swal.fire("Error de Validación", mensaje, "error");}
-            });
-        }
-
-// formulario eliminar
-    function mostrarFormularioEliminar() {
-        $("#formularios").html(`
-            <h4>Eliminar Cita</h4>
-            <input type="number" id="delId" placeholder="ID de la cita"><br>
-            <button class="btn-red" onclick="eliminarCita()">Eliminar</button>
-        `);
-    }
-
-// eliminar cita
-    function eliminarCita() {
-        const id = $("#delId").val();
-        $.ajax({
-            url: URL_BASE + "/" + id,
-            method: "DELETE",
-            success: msg => { Swal.fire("Éxito", msg, "success"), listarCitas() },
-            error: () => Swal.fire("Error", "No se pudo eliminar el producto", "error")
+            error: (xhr) => {
+                const mensaje = xhr.responseJSON ? xhr.responseJSON.message : "Error desconocido";
+                Swal.fire({...swalConfig, title: "Error de Validación", text: mensaje, icon: "error"});
+            }
         });
     }
 
+    function mostrarFormularioEliminar() {
+        $("#formularios").html(`
+            <h4>Eliminar Cita</h4>
+            <div style="text-align: center;">
+                <input type="number" id="delId" placeholder="ID de la cita a eliminar">
+                <button class="btn-red" style="margin-top: 15px;" onclick="confirmarEliminacion()"><i class="fas fa-trash-alt"></i> Eliminar Cita</button>
+            </div>
+        `);
+        document.getElementById("formularios").scrollIntoView({ behavior: 'smooth' });
+    }
 
-    function exportarExcel() {
-    const tabla = document.getElementById("tablaResultados");
-    const html = tabla.outerHTML.replace(/ /g, '%20');
-    const uri = 'data:application/vnd.ms-excel;charset=utf-8,' + html;
-    const link = document.createElement("a");
-    link.href = uri;
-    link.download = "Reporte_Citas.xls";
-    link.click();
+    // Nueva función intermedia para pedir confirmación con cartel previo
+    function confirmarEliminacion() {
+        const id = $("#delId").val().trim();
+        if(!id) return Swal.fire({...swalConfig, title: "Atención", text: "Por favor ingresá un ID válido", icon: "warning"});
+
+        Swal.fire({
+            ...swalConfig,
+            title: `¿Estás seguro de eliminar la cita #${id}?`,
+            text: "Esta acción no se puede deshacer de la base de datos.",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d63031",
+            cancelButtonColor: "#303136",
+            confirmButtonText: "Sí, eliminar",
+            cancelButtonText: "Cancelar"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                eliminarCita(id);
+            }
+        });
+    }
+
+    // Envía la petición DELETE real al backend validando existencia previa
+function eliminarCita(id) {
+    // 1. Primero consultamos si la cita realmente existe
+    $.get(URL_BASE + "/" + id)
+        .done(function() {
+            // Si entra acá, significa que la cita existe. Procedemos a eliminarla.
+            $.ajax({
+                url: URL_BASE + "/" + id,
+                method: "DELETE",
+                success: msg => { 
+                    const textoAlerta = (typeof msg === 'string' && msg) ? msg : "La cita ha sido eliminada con éxito.";
+                    
+                    Swal.fire({
+                        ...swalConfig, 
+                        title: "Eliminado", 
+                        text: textoAlerta, 
+                        icon: "success", 
+                        confirmButtonColor: "#00b894"
+                    });
+                    $("#formularios").html("");
+                    listarCitas();
+                },
+                error: (xhr) => {
+                    const mensaje = xhr.responseJSON ? xhr.responseJSON.message : "Error al intentar eliminar la cita.";
+                    Swal.fire({...swalConfig, title: "Error", text: mensaje, icon: "error"});
+                }
+            });
+        })
+        .fail(function() {
+            // Si el GET falla (404), significa que la cita no existe en la base de datos
+            Swal.fire({
+                ...swalConfig,
+                title: "No encontrada",
+                text: `No existe ninguna cita registrada con el ID #${id}.`,
+                icon: "error",
+                confirmButtonColor: "#d63031"
+            });
+        });
 }
+    
+    // Exportación nativa a CSV/Excel con codificación UTF-8 compatible y segura
+    function exportarExcel() {
+        const filas = document.querySelectorAll("#cuerpoTabla tr");
+        
+        if(filas.length === 0) {
+            return Swal.fire({
+                ...swalConfig, 
+                title: "Sin datos", 
+                text: "Primero debés listar las citas para poder exportar el reporte.", 
+                icon: "warning"
+            });
+        }
+        
+        // Creamos el contenido del CSV estructurado por columnas separadas por punto y coma (;)
+        let csvContent = "ID;Fecha y Hora;Nombre Cliente;Servicio\n";
+        
+        filas.forEach(fila => {
+            const columnas = fila.querySelectorAll("td");
+            if(columnas.length >= 4) {
+                const id = columnas[0].textContent.trim().replace("#", "");
+                const fecha = columnas[1].textContent.trim();
+                const nombre = columnas[2].textContent.trim();
+                const servicio = columnas[3].textContent.trim();
+                
+                csvContent += `${id};${fecha};${nombre};${servicio}\n`;
+            }
+        });
+        
+        // Agregamos el BOM UTF-8 (\uFEFF) para que Excel reconozca los tildes y caracteres de inmediato
+        const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement("a");
+        
+        if (navigator.msSaveBlob) { // Compatibilidad para navegadores viejos IE
+            navigator.msSaveBlob(blob, "Reporte_Citas.csv");
+        } else {
+            const url = URL.createObjectURL(blob);
+            link.href = url;
+            link.setAttribute("download", "Reporte_Citas.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    }
 
-// mostrar tabla en html
-        function mostrarTabla(data) {
+    function mostrarTabla(data) {
+        if(!data || data.length === 0 || !data[0]) {
+            $("#tablaResultados").html(`
+                <div class="info-placeholder">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <p>No se encontraron registros.</p>
+                </div>`);
+            return;
+        }
 
-            let html = `
-            <button class="btn-blue" onclick="exportarExcel()"><i class="fas fa-file-excel"></i> Descargar Reporte</button>
-            <input type="text" id="buscador" placeholder="Buscar por nombre o servicio...">
-            <table border="1" cellpadding="5" cellspacing="0">
-                <tr>
-                    <th>Id</th>
-                    <th>Fecha y hora</th>
-                    <th>Nombre cliente</th>
-                    <th>Servicio</th>
-                </tr>
-                `;
-            data.forEach(a => {
+        let html = `
+            <div class="table-actions">
+                <button class="btn-blue" onclick="exportarExcel()"><i class="fas fa-file-excel"></i> Descargar Reporte</button>
+                <input type="text" id="buscador" placeholder="🔎 Buscar por nombre o servicio...">
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th style="width: 25%;">Fecha y Hora</th>
+                            <th>Nombre Cliente</th>
+                            <th>Servicio</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cuerpoTabla">
+        `;
+        
+        data.forEach(a => {
+            if(a && a.id){
                 html += `
                     <tr>
-                        <td>${a.id}</td>
+                        <td><strong>#${a.id}</strong></td>
                         <td>${a.fechaHora.replace("T", " ")}</td>
                         <td>${a.nombreCliente}</td>
                         <td>${a.servicio}</td>
                     </tr>
-                    `;
-            });
-            html += "</table>";
-            $("#tablaResultados").html(html);
+                `;
+            }
+        });
+        
+        html += `
+                    </tbody>
+                </table>
+            </div>
+        `;
+        
+        $("#tablaResultados").html(html);
 
-            $(document).ready(function(){
-                $("#buscador").on("keyup", function() {
-                        var value = $(this).val().toLowerCase();
-                        $("#tablaResultados tr").filter(function() {
-                        // Ignoramos el encabezado (th) y filtramos las filas (tr)
-                        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-                    });
-                });
+        $("#buscador").on("keyup", function() {
+            var value = $(this).val().toLowerCase();
+            $("#cuerpoTabla tr").filter(function() {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
             });
-        }
-    </script>
+        });
+    }
+</script>
+
+
 </body>
+</html>
