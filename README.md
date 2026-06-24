@@ -58,8 +58,17 @@ static/: Frontend desarrollado con HTML, CSS y JavaScript (jQuery).
 
 **Capturas del Proyecto**
 
-Vista Principal
-![Pantalla Principal](img/principal.png)
+Vista principal
+![Pantalla Principal](img/Inicio.PNG)
 
-Validación de Negocio (Error en fecha pasada)
-![Error Validación](img/error-validacion.png)
+Error cita no encontrada
+![Error Validación](img/Error.PNG)
+
+Agendar cita
+![Agendar cita](img/AgendarCita.PNG)
+
+Consulta cita
+![Consultar cita](img/ConsultarCita.PNG)
+
+Cita encontrada
+![Cita encontrada](img/CitaEncontrada.PNG)
